@@ -13,14 +13,28 @@ const sounds = [
     'sounds/tom.wav'
 ];
 
+var key_press_functions = {};
 
 var keys = document.createElement('div');
 keys.className = 'keys';
 document.body.appendChild(keys);
 
 symbols.forEach(function (value, index) {
-    var key_element = create_sound_button_element(value, sounds[index]);
+    var sound_path = sounds[index];
+    var key_element = create_sound_button_element(value, sound_path);
+
+    key_press_functions[value] = function () {
+        play_audio(sound_path);
+    };
+
     keys.appendChild(key_element);
+});
+
+window.addEventListener('keypress', function (event) {
+    console.log(event);
+    var key = event.key || event.which || event.keyCode;
+    console.log('pressed:', key);
+    key_press_functions[key]();
 });
 
 function create_sound_button_element(symbol, sound) {
@@ -41,4 +55,14 @@ function create_sound_button_element(symbol, sound) {
 
 function extract_sound_name(sound_path) {
     return sound_path.replace(sounds_path, '').replace(sounds_extension, '');
+}
+
+function play_audio(sound_path) {
+    new Audio(sound_path).play()
+        .then(function () {
+            console.log('played:', sound_path)
+        })
+        .catch(function (reason) {
+            console.log('something bad happened:', reason)
+        })
 }

@@ -1,60 +1,38 @@
 const symbols = ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'];
+const sounds = ['boom', 'clap', 'hihat', 'kick', 'openhat', 'ride', 'snare', 'tink', 'tom'];
+
+if (symbols.length !== sounds.length) {
+    console.error('unequal number of sounds and symbols!')
+}
+
 const sounds_path = 'sounds/';
 const sounds_extension = '.wav';
-const sounds = [
-    'sounds/boom.wav',
-    'sounds/clap.wav',
-    'sounds/hihat.wav',
-    'sounds/kick.wav',
-    'sounds/openhat.wav',
-    'sounds/ride.wav',
-    'sounds/snare.wav',
-    'sounds/tink.wav',
-    'sounds/tom.wav'
-];
 
 var key_press_functions = {};
 
-var keys = document.createElement('div');
-keys.className = 'keys';
-document.body.appendChild(keys);
+// create root div with for key elements
+var keys = create_and_append_element('div', document.body, null, 'keys');
 
-symbols.forEach(function (value, index) {
-    var sound_path = sounds[index];
-    var key_element = create_sound_button_element(value, sound_path);
+// populates body with 'key' divs and register handler functions to play sounds
+symbols.forEach(function (symbol, index) {
+    var sound = sounds[index];
+    var key_element = create_and_append_element('div', keys, null, 'key');
+    create_and_append_element('kbd', key_element, symbol.toUpperCase(), null);
+    create_and_append_element('span', key_element, sound, 'sound');
+    register_key_press_function(symbol, sound)
+});
 
-    key_press_functions[value] = function () {
-        play_audio(sound_path);
+register_key_press_listener();
+
+console.log('app initialized :)');
+
+function register_key_press_function(key_code, sound) {
+    var key_press_function = function () {
+        play_audio(sounds_path + sound + sounds_extension)
     };
 
-    keys.appendChild(key_element);
-});
-
-window.addEventListener('keypress', function (event) {
-    console.log(event);
-    var key = event.key || event.which || event.keyCode;
-    console.log('pressed:', key);
-    key_press_functions[key]();
-});
-
-function create_sound_button_element(symbol, sound) {
-    var title_element = document.createElement('kbd');
-    title_element.innerText = symbol.toUpperCase();
-
-    var sound_element = document.createElement('span');
-    sound_element.className = 'sound';
-    sound_element.innerText = extract_sound_name(sound);
-
-    var key_element = document.createElement('div');
-    key_element.className = 'key';
-    key_element.appendChild(title_element);
-    key_element.appendChild(sound_element);
-
-    return key_element
-}
-
-function extract_sound_name(sound_path) {
-    return sound_path.replace(sounds_path, '').replace(sounds_extension, '');
+    key_press_functions[key_code.toLowerCase()] = key_press_function;
+    key_press_functions[key_code.toUpperCase()] = key_press_function;
 }
 
 function play_audio(sound_path) {
@@ -65,4 +43,23 @@ function play_audio(sound_path) {
         .catch(function (reason) {
             console.log('something bad happened:', reason)
         })
+}
+
+function register_key_press_listener() {
+    window.addEventListener('keypress', function (event) {
+        var key = event.key;
+        if (key in key_press_functions) {
+            key_press_functions[key]();
+        } else {
+            console.log('no handler defined for key:', key);
+        }
+    });
+}
+
+function create_and_append_element(tag, parent, inner_text, class_name) {
+    var element = document.createElement(tag);
+    if (inner_text) element.innerText = inner_text;
+    if (class_name) element.className = class_name;
+    if (parent) parent.appendChild(element);
+    return element;
 }

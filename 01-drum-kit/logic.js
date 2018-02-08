@@ -19,15 +19,16 @@ symbols.forEach(function (symbol, index) {
     var key_element = create_and_append_element('div', keys, null, 'key');
     create_and_append_element('kbd', key_element, symbol.toUpperCase(), null);
     create_and_append_element('span', key_element, sound, 'sound');
-    register_key_press_function(symbol, sound)
+    register_key_press_function(symbol, sound, key_element)
 });
 
 register_key_press_listener();
 
 console.log('app initialized :)');
 
-function register_key_press_function(key_code, sound) {
+function register_key_press_function(key_code, sound, key_element) {
     var key_press_function = function () {
+        // todo: add animation
         play_audio(sounds_path + sound + sounds_extension)
     };
 

@@ -57,7 +57,7 @@ function play_audio(sound_path) {
 }
 
 function register_key_press_listener() {
-    window.addEventListener('keypress', function (event) {
+    window.addEventListener('keydown', function (event) {
         const key = event.key;
         if (key in key_press_functions) {
             key_press_functions[key]();

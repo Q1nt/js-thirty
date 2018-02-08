@@ -5,10 +5,9 @@ if (symbols.length !== sounds.length) {
     console.error('unequal number of sounds and symbols!')
 }
 
-const sounds_path = 'sounds/';
-const sounds_extension = '.wav';
-
 const key_press_functions = {};
+
+const animation_class_name = 'playing';
 
 // create root div with for key elements
 const keys = create_and_append_element('div', document.body, null, 'keys');
@@ -19,7 +18,8 @@ symbols.forEach(function (symbol, index) {
     const key_element = create_and_append_element('div', keys, null, 'key');
     create_and_append_element('kbd', key_element, symbol.toUpperCase(), null);
     create_and_append_element('span', key_element, sound, 'sound');
-    register_key_press_function(symbol, sound, key_element)
+    register_key_press_function(symbol, sound, key_element);
+    cleanupAnimationAtEnd(key_element);
 });
 
 register_key_press_listener();
@@ -28,12 +28,24 @@ console.log('app initialized :)');
 
 function register_key_press_function(key_code, sound, key_element) {
     const key_press_function = function () {
-        // todo: add animation
-        play_audio(sounds_path + sound + sounds_extension)
+        play_audio(`sounds/${sound}.wav`);
+        triggerAnimation(key_element)
     };
 
     key_press_functions[key_code.toLowerCase()] = key_press_function;
     key_press_functions[key_code.toUpperCase()] = key_press_function;
+}
+
+function triggerAnimation(element) {
+    element.classList.add(animation_class_name);
+}
+
+function cleanupAnimationAtEnd(element) {
+    element.addEventListener('transitionend', function (event) {
+        if (event.propertyName === 'transform') {
+            element.classList.remove(animation_class_name)
+        }
+    })
 }
 
 function play_audio(sound_path) {
@@ -41,10 +53,10 @@ function play_audio(sound_path) {
     audio.currentTime = 0; // rewind to start
     audio.play()
         .then(function () {
-            console.log('played:', sound_path)
+            console.log(`played sound at ${sound_path}`);
         })
         .catch(function (reason) {
-            console.log('something bad happened:', reason)
+            console.log(`something bad happened: ${reason}`);
         })
 }
 
@@ -54,7 +66,7 @@ function register_key_press_listener() {
         if (key in key_press_functions) {
             key_press_functions[key]();
         } else {
-            console.log('no handler defined for key:', key);
+            console.log(`no handler defined for key: ${key}`);
         }
     });
 }

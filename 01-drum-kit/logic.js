@@ -8,15 +8,15 @@ if (symbols.length !== sounds.length) {
 const sounds_path = 'sounds/';
 const sounds_extension = '.wav';
 
-var key_press_functions = {};
+const key_press_functions = {};
 
 // create root div with for key elements
-var keys = create_and_append_element('div', document.body, null, 'keys');
+const keys = create_and_append_element('div', document.body, null, 'keys');
 
 // populates body with 'key' divs and register handler functions to play sounds
 symbols.forEach(function (symbol, index) {
-    var sound = sounds[index];
-    var key_element = create_and_append_element('div', keys, null, 'key');
+    const sound = sounds[index];
+    const key_element = create_and_append_element('div', keys, null, 'key');
     create_and_append_element('kbd', key_element, symbol.toUpperCase(), null);
     create_and_append_element('span', key_element, sound, 'sound');
     register_key_press_function(symbol, sound, key_element)
@@ -27,7 +27,7 @@ register_key_press_listener();
 console.log('app initialized :)');
 
 function register_key_press_function(key_code, sound, key_element) {
-    var key_press_function = function () {
+    const key_press_function = function () {
         // todo: add animation
         play_audio(sounds_path + sound + sounds_extension)
     };
@@ -37,7 +37,7 @@ function register_key_press_function(key_code, sound, key_element) {
 }
 
 function play_audio(sound_path) {
-    var audio = new Audio(sound_path);
+    const audio = new Audio(sound_path);
     audio.currentTime = 0; // rewind to start
     audio.play()
         .then(function () {
@@ -50,7 +50,7 @@ function play_audio(sound_path) {
 
 function register_key_press_listener() {
     window.addEventListener('keypress', function (event) {
-        var key = event.key;
+        const key = event.key;
         if (key in key_press_functions) {
             key_press_functions[key]();
         } else {
@@ -60,7 +60,7 @@ function register_key_press_listener() {
 }
 
 function create_and_append_element(tag, parent, inner_text, class_name) {
-    var element = document.createElement(tag);
+    const element = document.createElement(tag);
     if (inner_text) element.innerText = inner_text;
     if (class_name) element.className = class_name;
     if (parent) parent.appendChild(element);

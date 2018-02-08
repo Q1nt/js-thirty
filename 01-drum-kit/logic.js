@@ -27,7 +27,7 @@ register_key_press_listener();
 console.log('app initialized :)');
 
 function register_key_press_function(key_code, sound, key_element) {
-    const key_press_function = function () {
+    const key_press_function = () => {
         play_audio(`sounds/${sound}.wav`);
         triggerAnimation(key_element)
     };
@@ -52,12 +52,8 @@ function play_audio(sound_path) {
     const audio = new Audio(sound_path);
     audio.currentTime = 0; // rewind to start
     audio.play()
-        .then(function () {
-            console.log(`played sound at ${sound_path}`);
-        })
-        .catch(function (reason) {
-            console.log(`something bad happened: ${reason}`);
-        })
+        .then(() => console.log(`played sound at ${sound_path}`))
+        .catch((reason) => console.log(`something bad happened: ${reason}`))
 }
 
 function register_key_press_listener() {

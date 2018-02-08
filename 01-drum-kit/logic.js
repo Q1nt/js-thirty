@@ -37,7 +37,9 @@ function register_key_press_function(key_code, sound, key_element) {
 }
 
 function play_audio(sound_path) {
-    new Audio(sound_path).play()
+    var audio = new Audio(sound_path);
+    audio.currentTime = 0; // rewind to start
+    audio.play()
         .then(function () {
             console.log('played:', sound_path)
         })

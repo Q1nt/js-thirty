@@ -2,12 +2,16 @@ const second_hand = document.querySelector('.second-hand');
 const minute_hand = document.querySelector('.min-hand');
 const hour_hand = document.querySelector('.hour-hand');
 
-const deg_per_second = 360/60;
-const deg_per_minute = 360/60;
-const deg_per_hour = 360/12;
+const deg_per_second = 360 / 60;
+const deg_per_minute = 360 / 60;
+const deg_per_hour = 360 / 12;
 
 const start_position_degree = 90;
-update()
+
+// trigger first update
+update();
+// schedule it with 1s interval
+setInterval(update, 1000);
 
 function update() {
     const now = new Date();
@@ -17,7 +21,10 @@ function update() {
 }
 
 function rotate_element(number, element, degrees_per_unit) {
+    if (number === 0) {
+        element.style.transition = 'none';
+    } else {
+        element.style.removeProperty('transition')
+    }
     element.style.transform = `rotate(${start_position_degree + (number * degrees_per_unit)}deg)`;
 }
-
-setInterval(update, 1000);

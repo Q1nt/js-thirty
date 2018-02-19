@@ -86,14 +86,14 @@
     // 8. Reduce Exercise
     // Sum up the instances of each of these
     const data = ['car', 'car', 'truck', 'truck', 'bike', 'walk', 'car', 'van', 'bike', 'walk', 'car', 'van', 'car', 'truck'];
-    const sum_map = {};
-    data.reduce((accumulator, current) => {
-        if (current in sum_map) {
-            sum_map[current] = sum_map[current] + 1;
+    const sum_map = data.reduce((result, item) => {
+        if (item in result) {
+            result[item]++;
         } else {
-            sum_map[current] = 0;
+            result[item] = 1;
         }
-    });
+        return result;
+    }, {});
     console.log('each instance count');
     console.log(sum_map);
 
